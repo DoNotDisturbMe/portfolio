@@ -23,7 +23,7 @@ CORS(app)
 # CONFIGURATION  —  Edit these or use environment variables
 # ─────────────────────────────────────────────────────────
 GMAIL_USER     = os.getenv("GMAIL_USER",     "kmprince15932@gmail.com")
-GMAIL_PASSWORD = os.getenv("GMAIL_PASSWORD", "your_gmail_app_password_here")
+GMAIL_PASSWORD = os.getenv("GMAIL_PASSWORD", "dcce mklw yjil xbhk")
 NOTIFY_EMAIL   = os.getenv("NOTIFY_EMAIL",   "kmprince15932@gmail.com")  # receives notifications
 SERVERS_FILE   = "servers.json"
 
@@ -393,7 +393,7 @@ def health():
         "service": "Prince Kumar Portfolio API",
         "version": "1.0.0",
         "timestamp": datetime.now().isoformat(),
-        "gmail_configured": GMAIL_PASSWORD != "your_gmail_app_password_here"
+        "gmail_configured": GMAIL_PASSWORD != "dcce mklw yjil xbhk"
     }), 200
 
 
