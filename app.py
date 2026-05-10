@@ -24,9 +24,9 @@ CORS(app)
 # ─────────────────────────────────────────────────────────
 # CONFIGURATION  —  Edit these or use environment variables
 # ─────────────────────────────────────────────────────────
-GMAIL_USER     = os.getenv("GMAIL_USER",     "kmprince15932@gmail.com")
-GMAIL_PASSWORD = os.getenv("GMAIL_PASSWORD", "dcce mklw yjil xbhk")
-NOTIFY_EMAIL   = os.getenv("NOTIFY_EMAIL",   "kmprince15932@gmail.com")  # receives notifications
+GMAIL_USER     = "kmprince15932@gmail.com"
+GMAIL_PASSWORD = "dcce mklw yjil xbhk"
+NOTIFY_EMAIL   = "kmprince15932@gmail.com"
 SERVERS_FILE   = "servers.json"
 
 
