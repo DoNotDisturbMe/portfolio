@@ -1,1150 +1,286 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Prince Kumar — DevOps & SRE Engineer</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
   <style>
-    :root {
-      --bg: #050a08;
-      --bg2: #080f0b;
-      --surface: #0d1810;
-      --surface2: #111e13;
-      --green: #00ff6a;
-      --green-dim: #00c452;
-      --green-glow: rgba(0,255,106,0.15);
-      --green-subtle: rgba(0,255,106,0.07);
-      --amber: #ffb800;
-      --red: #ff4444;
-      --blue: #4af;
-      --text: #c8e6c9;
-      --text-dim: #5a7a5e;
-      --text-muted: #2d4a30;
-      --border: rgba(0,255,106,0.12);
-      --border-bright: rgba(0,255,106,0.35);
-      --mono: 'JetBrains Mono', monospace;
-      --sans: 'Syne', sans-serif;
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--mono);
-      overflow-x: hidden;
-      cursor: none;
-    }
-
-    /* Custom cursor */
-    .cursor {
-      width: 12px; height: 12px;
-      background: var(--green);
-      border-radius: 50%;
-      position: fixed;
-      pointer-events: none;
-      z-index: 9999;
-      transition: transform 0.1s;
-      box-shadow: 0 0 20px var(--green), 0 0 40px rgba(0,255,106,0.3);
-    }
-    .cursor-ring {
-      width: 36px; height: 36px;
-      border: 1px solid rgba(0,255,106,0.4);
-      border-radius: 50%;
-      position: fixed;
-      pointer-events: none;
-      z-index: 9998;
-      transition: all 0.15s ease;
-    }
-
-    /* Grid background */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(0,255,106,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,255,106,0.03) 1px, transparent 1px);
-      background-size: 60px 60px;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* Scanlines */
-    body::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: repeating-linear-gradient(
-        0deg, transparent, transparent 2px,
-        rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px
-      );
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    /* NAV */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 18px 60px;
-      background: rgba(5,10,8,0.85);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .nav-logo {
-      font-family: var(--mono);
-      font-weight: 800;
-      font-size: 1rem;
-      color: var(--green);
-      letter-spacing: 0.1em;
-      text-decoration: none;
-    }
-    .nav-logo span { color: var(--text-dim); }
-
-    .nav-links { display: flex; gap: 32px; list-style: none; }
-    .nav-links a {
-      color: var(--text-dim);
-      text-decoration: none;
-      font-size: 0.75rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      transition: color 0.2s;
-    }
-    .nav-links a:hover { color: var(--green); }
-
-    .nav-status {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.7rem;
-      color: var(--green);
-      letter-spacing: 0.1em;
-    }
-    .status-dot {
-      width: 7px; height: 7px;
-      background: var(--green);
-      border-radius: 50%;
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0%,100% { box-shadow: 0 0 0 0 rgba(0,255,106,0.6); }
-      50% { box-shadow: 0 0 0 6px rgba(0,255,106,0); }
-    }
-
-    /* HERO */
-    #hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      padding: 120px 60px 80px;
-      position: relative;
-      z-index: 2;
-    }
-
-    .hero-inner { max-width: 1100px; width: 100%; }
-
-    .hero-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      border: 1px solid var(--border-bright);
-      padding: 6px 16px;
-      font-size: 0.7rem;
-      letter-spacing: 0.2em;
-      color: var(--green);
-      margin-bottom: 40px;
-      background: var(--green-subtle);
-      animation: fadeInUp 0.8s ease both;
-    }
-
-    .hero-name {
-      font-family: var(--sans);
-      font-size: clamp(3.5rem, 8vw, 7rem);
-      font-weight: 800;
-      line-height: 0.95;
-      letter-spacing: -0.02em;
-      color: #fff;
-      margin-bottom: 16px;
-      animation: fadeInUp 0.8s 0.1s ease both;
-    }
-    .hero-name .accent { color: var(--green); }
-
-    .hero-title {
-      font-size: 1.1rem;
-      color: var(--text-dim);
-      letter-spacing: 0.05em;
-      margin-bottom: 32px;
-      animation: fadeInUp 0.8s 0.2s ease both;
-    }
-
-    .hero-badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 40px;
-      animation: fadeInUp 0.8s 0.3s ease both;
-    }
-    .badge {
-      border: 1px solid var(--border);
-      padding: 5px 14px;
-      font-size: 0.65rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--text-dim);
-      background: var(--surface);
-    }
-    .badge.green { border-color: var(--green-dim); color: var(--green); background: var(--green-subtle); }
-    .badge.amber { border-color: rgba(255,184,0,0.4); color: var(--amber); background: rgba(255,184,0,0.05); }
-
-    .hero-desc {
-      max-width: 640px;
-      font-size: 0.88rem;
-      line-height: 1.8;
-      color: var(--text-dim);
-      margin-bottom: 48px;
-      animation: fadeInUp 0.8s 0.35s ease both;
-    }
-
-    .hero-cta {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-      animation: fadeInUp 0.8s 0.45s ease both;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 14px 32px;
-      font-family: var(--mono);
-      font-size: 0.75rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      text-decoration: none;
-      cursor: none;
-      transition: all 0.2s;
-      position: relative;
-      overflow: hidden;
-    }
-    .btn-primary {
-      background: var(--green);
-      color: #000;
-      font-weight: 700;
-    }
-    .btn-primary:hover {
-      background: #fff;
-      box-shadow: 0 0 40px rgba(0,255,106,0.4);
-    }
-    .btn-outline {
-      border: 1px solid var(--border-bright);
-      color: var(--green);
-    }
-    .btn-outline:hover {
-      background: var(--green-subtle);
-      border-color: var(--green);
-    }
-
-    /* Terminal block */
-    .hero-terminal {
-      position: absolute;
-      right: 60px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 420px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      animation: fadeInRight 1s 0.5s ease both;
-    }
-    .terminal-bar {
-      padding: 10px 16px;
-      background: var(--surface2);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.65rem;
-      color: var(--text-dim);
-    }
-    .t-dot { width: 10px; height: 10px; border-radius: 50%; }
-    .terminal-body { padding: 20px; font-size: 0.72rem; line-height: 1.9; }
-    .t-prompt { color: var(--green); }
-    .t-cmd { color: #fff; }
-    .t-out { color: var(--text-dim); padding-left: 12px; }
-    .t-out.green { color: var(--green); }
-    .t-out.amber { color: var(--amber); }
-    .blink { animation: blink 1s step-end infinite; }
-    @keyframes blink { 50% { opacity: 0; } }
-
-    /* SECTION COMMON */
-    section { position: relative; z-index: 2; padding: 100px 60px; }
-    .section-label {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      font-size: 0.65rem;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--green);
-      margin-bottom: 56px;
-    }
-    .section-label::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
-    .section-label span { color: var(--text-muted); margin-right: 8px; }
-
-    h2 {
-      font-family: var(--sans);
-      font-size: clamp(2rem, 4vw, 3.2rem);
-      font-weight: 800;
-      color: #fff;
-      line-height: 1.1;
-      margin-bottom: 20px;
-    }
-    h2 .accent { color: var(--green); }
-
-    /* SKILLS */
-    #skills { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-
-    .skills-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 2px;
-    }
-    .skill-category {
-      background: var(--bg2);
-      padding: 28px;
-      border: 1px solid var(--border);
-      transition: border-color 0.2s;
-    }
-    .skill-category:hover { border-color: var(--border-bright); }
-    .skill-cat-name {
-      font-size: 0.62rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--green);
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .skill-cat-name::before { content: '▸'; }
-    .skill-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-    .skill-tag {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      padding: 3px 10px;
-      font-size: 0.65rem;
-      color: var(--text);
-      letter-spacing: 0.05em;
-    }
-
-    /* EXPERIENCE */
-    .exp-timeline { position: relative; }
-    .exp-timeline::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      width: 1px;
-      background: linear-gradient(to bottom, var(--green), transparent);
-    }
-    .exp-item {
-      padding: 0 0 56px 40px;
-      position: relative;
-      opacity: 0;
-      transform: translateX(-20px);
-      transition: all 0.6s ease;
-    }
-    .exp-item.visible { opacity: 1; transform: translateX(0); }
-    .exp-dot {
-      position: absolute;
-      left: -5px; top: 6px;
-      width: 11px; height: 11px;
-      background: var(--green);
-      border-radius: 50%;
-      box-shadow: 0 0 15px var(--green);
-    }
-    .exp-period {
-      font-size: 0.65rem;
-      letter-spacing: 0.15em;
-      color: var(--green-dim);
-      margin-bottom: 6px;
-    }
-    .exp-role {
-      font-family: var(--sans);
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 4px;
-    }
-    .exp-company {
-      font-size: 0.78rem;
-      color: var(--text-dim);
-      margin-bottom: 16px;
-    }
-    .exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 6px; }
-    .exp-bullets li {
-      font-size: 0.78rem;
-      color: var(--text-dim);
-      line-height: 1.7;
-      padding-left: 16px;
-      position: relative;
-    }
-    .exp-bullets li::before { content: '›'; position: absolute; left: 0; color: var(--green); }
-
-    /* ACHIEVEMENTS */
-    #achievements { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-    .achievements-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 2px;
-    }
-    .ach-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      padding: 32px;
-      transition: all 0.2s;
-      position: relative;
-      overflow: hidden;
-    }
-    .ach-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: var(--green);
-      transform: scaleX(0);
-      transition: transform 0.3s;
-    }
-    .ach-card:hover::before { transform: scaleX(1); }
-    .ach-card:hover { border-color: var(--border-bright); background: var(--surface2); }
-    .ach-num {
-      font-family: var(--sans);
-      font-size: 2.5rem;
-      font-weight: 800;
-      color: var(--green);
-      line-height: 1;
-      margin-bottom: 8px;
-    }
-    .ach-label {
-      font-size: 0.75rem;
-      color: var(--text-dim);
-      line-height: 1.6;
-    }
-
-    /* SERVER MARKETPLACE */
-    #servers { }
-    .servers-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 40px;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-    .server-filters {
-      display: flex;
-      gap: 8px;
-    }
-    .filter-btn {
-      padding: 6px 16px;
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text-dim);
-      cursor: none;
-      transition: all 0.2s;
-    }
-    .filter-btn.active, .filter-btn:hover {
-      border-color: var(--green);
-      color: var(--green);
-      background: var(--green-subtle);
-    }
-
-    .servers-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-      gap: 2px;
-    }
-    .server-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: 28px;
-      transition: all 0.25s;
-      position: relative;
-    }
-    .server-card:hover { border-color: var(--border-bright); background: var(--surface2); }
-    .server-card.featured { border-color: rgba(255,184,0,0.3); }
-    .server-card.featured::before {
-      content: 'FEATURED';
-      position: absolute;
-      top: 16px; right: 16px;
-      font-size: 0.55rem;
-      letter-spacing: 0.2em;
-      color: var(--amber);
-      border: 1px solid rgba(255,184,0,0.4);
-      padding: 2px 8px;
-    }
-    .server-type {
-      font-size: 0.6rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--green);
-      margin-bottom: 8px;
-    }
-    .server-name {
-      font-family: var(--sans);
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 4px;
-    }
-    .server-location {
-      font-size: 0.7rem;
-      color: var(--text-dim);
-      margin-bottom: 20px;
-    }
-    .server-specs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-    .spec {
-      background: var(--bg2);
-      padding: 10px 12px;
-      border: 1px solid var(--border);
-    }
-    .spec-label {
-      font-size: 0.55rem;
-      letter-spacing: 0.15em;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      margin-bottom: 3px;
-    }
-    .spec-val {
-      font-size: 0.78rem;
-      color: var(--text);
-      font-weight: 500;
-    }
-    .server-price {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .price {
-      font-family: var(--sans);
-      font-size: 1.4rem;
-      font-weight: 800;
-      color: var(--green);
-    }
-    .price span { font-size: 0.7rem; color: var(--text-dim); font-family: var(--mono); font-weight: 400; }
-    .server-status {
-      font-size: 0.6rem;
-      letter-spacing: 0.1em;
-      padding: 4px 10px;
-      border: 1px solid;
-    }
-    .server-status.available { color: var(--green); border-color: var(--green-dim); }
-    .server-status.sold { color: var(--red); border-color: var(--red); }
-
-    /* Add Server Panel */
-    .add-server-section {
-      margin-top: 60px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-    }
-    .add-server-header {
-      padding: 20px 28px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .add-server-title {
-      font-size: 0.72rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--green);
-    }
-    .add-toggle {
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--text-dim);
-      padding: 6px 14px;
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      letter-spacing: 0.1em;
-      cursor: none;
-      transition: all 0.2s;
-    }
-    .add-toggle:hover { border-color: var(--green); color: var(--green); }
-
-    .add-server-form {
-      padding: 28px;
-      display: none;
-    }
-    .add-server-form.open { display: block; }
-    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 14px; }
-    .form-group { display: flex; flex-direction: column; gap: 6px; }
-    .form-label {
-      font-size: 0.6rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--text-dim);
-    }
-    .form-input, .form-select {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 10px 14px;
-      font-family: var(--mono);
-      font-size: 0.75rem;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .form-input:focus, .form-select:focus { border-color: var(--green); }
-    .form-select option { background: var(--bg2); }
-
-    /* CONTACT */
-    #contact { background: var(--surface); border-top: 1px solid var(--border); }
-    .contact-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-    }
-    .contact-info { display: flex; flex-direction: column; gap: 24px; }
-    .contact-item {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .contact-item-label {
-      font-size: 0.6rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--green);
-    }
-    .contact-item-val {
-      font-size: 0.85rem;
-      color: var(--text);
-    }
-    .contact-item-val a { color: var(--text); text-decoration: none; }
-    .contact-item-val a:hover { color: var(--green); }
-
-    .freelance-banner {
-      border: 1px solid rgba(255,184,0,0.3);
-      background: rgba(255,184,0,0.05);
-      padding: 20px 24px;
-      margin-top: 8px;
-    }
-    .freelance-banner-title {
-      font-size: 0.65rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--amber);
-      margin-bottom: 6px;
-    }
-    .freelance-banner-text {
-      font-size: 0.78rem;
-      color: var(--text-dim);
-      line-height: 1.7;
-    }
-
-    .contact-form { display: flex; flex-direction: column; gap: 14px; }
-    .contact-form textarea {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 14px;
-      font-family: var(--mono);
-      font-size: 0.75rem;
-      resize: vertical;
-      min-height: 120px;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .contact-form textarea:focus { border-color: var(--green); }
-
-    .form-msg {
-      font-size: 0.72rem;
-      padding: 10px 14px;
-      border: 1px solid;
-      display: none;
-    }
-    .form-msg.success { color: var(--green); border-color: var(--green-dim); background: var(--green-subtle); display: block; }
-    .form-msg.error { color: var(--red); border-color: var(--red); background: rgba(255,68,68,0.05); display: block; }
-
-    /* FOOTER */
-    footer {
-      position: relative;
-      z-index: 2;
-      border-top: 1px solid var(--border);
-      padding: 40px 60px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-    .footer-copy { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.1em; }
-    .footer-links { display: flex; gap: 24px; }
-    .footer-links a {
-      font-size: 0.65rem;
-      color: var(--text-dim);
-      text-decoration: none;
-      letter-spacing: 0.1em;
-      transition: color 0.2s;
-    }
-    .footer-links a:hover { color: var(--green); }
-
-    /* ANIMATIONS */
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes fadeInRight {
-      from { opacity: 0; transform: translateY(-50%) translateX(30px); }
-      to { opacity: 1; transform: translateY(-50%) translateX(0); }
-    }
-
-    /* MODAL */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(5,10,8,0.95);
-      z-index: 500;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s;
-    }
-    .modal-overlay.open { opacity: 1; pointer-events: all; }
-    .modal {
-      background: var(--surface);
-      border: 1px solid var(--border-bright);
-      padding: 40px;
-      max-width: 500px;
-      width: 90%;
-      transform: translateY(20px);
-      transition: transform 0.3s;
-    }
-    .modal-overlay.open .modal { transform: translateY(0); }
-    .modal-title {
-      font-family: var(--sans);
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 8px;
-    }
-    .modal-sub { font-size: 0.72rem; color: var(--text-dim); margin-bottom: 28px; line-height: 1.6; }
-    .modal-close {
-      position: absolute;
-      top: 20px; right: 20px;
-      background: none;
-      border: none;
-      color: var(--text-dim);
-      font-size: 1.2rem;
-      cursor: none;
-    }
-    .modal-close:hover { color: var(--green); }
-
-    /* SCROLLBAR */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--border-bright); }
-
-    /* RESPONSIVE */
-    @media (max-width: 900px) {
-      nav { padding: 16px 24px; }
-      .nav-links { display: none; }
-      #hero { padding: 100px 24px 60px; }
-      .hero-terminal { display: none; }
-      section { padding: 80px 24px; }
-      footer { padding: 30px 24px; }
-      .contact-grid { grid-template-columns: 1fr; }
-    }
+    :root{--bg:#050a08;--bg2:#080f0b;--surface:#0d1810;--surface2:#111e13;--green:#00ff6a;--green-dim:#00c452;--green-glow:rgba(0,255,106,.15);--green-sub:rgba(0,255,106,.07);--amber:#ffb800;--red:#ff4444;--blue:#4af;--text:#c8e6c9;--text-dim:#5a7a5e;--text-muted:#2d4a30;--border:rgba(0,255,106,.12);--border-b:rgba(0,255,106,.35);--mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--bg);color:var(--text);font-family:var(--mono);overflow-x:hidden;cursor:none;}
+    .cursor{width:12px;height:12px;background:var(--green);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;box-shadow:0 0 20px var(--green),0 0 40px rgba(0,255,106,.3);}
+    .cursor-ring{width:36px;height:36px;border:1px solid rgba(0,255,106,.4);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transition:all .15s ease;}
+    body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,255,106,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,106,.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0;}
+    body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.12) 2px,rgba(0,0,0,.12) 4px);pointer-events:none;z-index:1;}
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:18px 60px;background:rgba(5,10,8,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+    .nav-logo{font-family:var(--mono);font-weight:800;font-size:1rem;color:var(--green);letter-spacing:.1em;text-decoration:none;}
+    .nav-logo span{color:var(--text-dim);}
+    .nav-links{display:flex;gap:32px;list-style:none;}
+    .nav-links a{color:var(--text-dim);text-decoration:none;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;transition:color .2s;}
+    .nav-links a:hover{color:var(--green);}
+    .nav-status{display:flex;align-items:center;gap:8px;font-size:.7rem;color:var(--green);letter-spacing:.1em;}
+    .status-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 2s infinite;}
+    @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,255,106,.6)}50%{box-shadow:0 0 0 6px rgba(0,255,106,0)}}
+    section{position:relative;z-index:2;padding:100px 60px;}
+    #hero{min-height:100vh;display:flex;align-items:center;padding:120px 60px 80px;}
+    .hero-inner{max-width:1100px;width:100%;}
+    .hero-tag{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border-b);padding:6px 16px;font-size:.7rem;letter-spacing:.2em;color:var(--green);margin-bottom:40px;background:var(--green-sub);animation:fadeInUp .8s ease both;}
+    .hero-name{font-family:var(--sans);font-size:clamp(3.5rem,8vw,7rem);font-weight:800;line-height:.95;letter-spacing:-.02em;color:#fff;margin-bottom:16px;animation:fadeInUp .8s .1s ease both;}
+    .hero-name .accent{color:var(--green);}
+    .hero-title{font-size:1.1rem;color:var(--text-dim);letter-spacing:.05em;margin-bottom:32px;animation:fadeInUp .8s .2s ease both;}
+    .hero-badges{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:40px;animation:fadeInUp .8s .3s ease both;}
+    .badge{border:1px solid var(--border);padding:5px 14px;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);background:var(--surface);}
+    .badge.green{border-color:var(--green-dim);color:var(--green);background:var(--green-sub);}
+    .badge.amber{border-color:rgba(255,184,0,.4);color:var(--amber);background:rgba(255,184,0,.05);}
+    .hero-desc{max-width:640px;font-size:.88rem;line-height:1.8;color:var(--text-dim);margin-bottom:48px;animation:fadeInUp .8s .35s ease both;}
+    .hero-cta{display:flex;gap:16px;flex-wrap:wrap;animation:fadeInUp .8s .45s ease both;}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;font-family:var(--mono);font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;text-decoration:none;cursor:none;transition:all .2s;}
+    .btn-primary{background:var(--green);color:#000;font-weight:700;}
+    .btn-primary:hover{background:#fff;box-shadow:0 0 40px rgba(0,255,106,.4);}
+    .btn-outline{border:1px solid var(--border-b);color:var(--green);}
+    .btn-outline:hover{background:var(--green-sub);border-color:var(--green);}
+    .hero-terminal{position:absolute;right:60px;top:50%;transform:translateY(-50%);width:420px;background:var(--surface);border:1px solid var(--border);animation:fadeInRight 1s .5s ease both;}
+    .terminal-bar{padding:10px 16px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;font-size:.65rem;color:var(--text-dim);}
+    .t-dot{width:10px;height:10px;border-radius:50%;}
+    .terminal-body{padding:20px;font-size:.72rem;line-height:1.9;}
+    .t-prompt{color:var(--green);}
+    .t-out{color:var(--text-dim);padding-left:12px;}
+    .t-out.green{color:var(--green);}
+    .t-out.amber{color:var(--amber);}
+    .blink{animation:blink 1s step-end infinite;}
+    @keyframes blink{50%{opacity:0}}
+    .section-label{display:flex;align-items:center;gap:16px;font-size:.65rem;letter-spacing:.25em;text-transform:uppercase;color:var(--green);margin-bottom:56px;}
+    .section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+    .section-label span{color:var(--text-muted);margin-right:8px;}
+    h2{font-family:var(--sans);font-size:clamp(2rem,4vw,3.2rem);font-weight:800;color:#fff;line-height:1.1;margin-bottom:20px;}
+    h2 .accent{color:var(--green);}
+    #skills{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+    .skills-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2px;}
+    .skill-category{background:var(--bg2);padding:28px;border:1px solid var(--border);transition:border-color .2s;}
+    .skill-category:hover{border-color:var(--border-b);}
+    .skill-cat-name{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--green);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+    .skill-cat-name::before{content:'▸';}
+    .skill-tags{display:flex;flex-wrap:wrap;gap:6px;}
+    .skill-tag{background:var(--surface2);border:1px solid var(--border);padding:3px 10px;font-size:.65rem;color:var(--text);letter-spacing:.05em;}
+    .exp-timeline{position:relative;}
+    .exp-timeline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,var(--green),transparent);}
+    .exp-item{padding:0 0 56px 40px;position:relative;opacity:0;transform:translateX(-20px);transition:all .6s ease;}
+    .exp-item.visible{opacity:1;transform:translateX(0);}
+    .exp-dot{position:absolute;left:-5px;top:6px;width:11px;height:11px;background:var(--green);border-radius:50%;box-shadow:0 0 15px var(--green);}
+    .exp-period{font-size:.65rem;letter-spacing:.15em;color:var(--green-dim);margin-bottom:6px;}
+    .exp-role{font-family:var(--sans);font-size:1.3rem;font-weight:700;color:#fff;margin-bottom:4px;}
+    .exp-company{font-size:.78rem;color:var(--text-dim);margin-bottom:16px;}
+    .exp-bullets{list-style:none;display:flex;flex-direction:column;gap:6px;}
+    .exp-bullets li{font-size:.78rem;color:var(--text-dim);line-height:1.7;padding-left:16px;position:relative;}
+    .exp-bullets li::before{content:'›';position:absolute;left:0;color:var(--green);}
+    #achievements{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+    .achievements-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:2px;}
+    .ach-card{background:var(--bg2);border:1px solid var(--border);padding:32px;transition:all .2s;position:relative;overflow:hidden;}
+    .ach-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--green);transform:scaleX(0);transition:transform .3s;}
+    .ach-card:hover::before{transform:scaleX(1);}
+    .ach-card:hover{border-color:var(--border-b);background:var(--surface2);}
+    .ach-num{font-family:var(--sans);font-size:2.5rem;font-weight:800;color:var(--green);line-height:1;margin-bottom:8px;}
+    .ach-label{font-size:.75rem;color:var(--text-dim);line-height:1.6;}
+    /* SERVICES */
+    #freelance{background:var(--bg2);}
+    .services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:2px;}
+    .service-card{background:var(--surface);border:1px solid var(--border);padding:24px 20px;transition:all .2s;display:flex;align-items:center;gap:12px;}
+    .service-card:hover{border-color:var(--border-b);background:var(--surface2);}
+    .service-icon{font-size:1.2rem;opacity:.7;}
+    .service-label{font-size:.75rem;color:var(--text);line-height:1.5;}
+    /* SERVERS */
+    .server-filters{display:flex;gap:8px;margin-bottom:24px;}
+    .filter-btn{padding:6px 16px;font-family:var(--mono);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:none;transition:all .2s;}
+    .filter-btn.active,.filter-btn:hover{border-color:var(--green);color:var(--green);background:var(--green-sub);}
+    .servers-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:2px;}
+    .server-card{background:var(--surface);border:1px solid var(--border);padding:28px;transition:all .25s;position:relative;}
+    .server-card:hover{border-color:var(--border-b);background:var(--surface2);}
+    .server-card.featured{border-color:rgba(255,184,0,.25);}
+    .server-card.featured::before{content:'⭐ FEATURED';position:absolute;top:14px;right:14px;font-size:.55rem;letter-spacing:.2em;color:var(--amber);border:1px solid rgba(255,184,0,.4);padding:2px 8px;}
+    .server-type{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--green);margin-bottom:8px;}
+    .server-name{font-family:var(--sans);font-size:1.15rem;font-weight:700;color:#fff;margin-bottom:4px;}
+    .server-location{font-size:.7rem;color:var(--text-dim);margin-bottom:20px;}
+    .server-specs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;}
+    .spec{background:var(--bg2);padding:10px 12px;border:1px solid var(--border);}
+    .spec-label{font-size:.55rem;letter-spacing:.15em;color:var(--text-muted);text-transform:uppercase;margin-bottom:3px;}
+    .spec-val{font-size:.78rem;color:var(--text);font-weight:500;}
+    .server-price{display:flex;justify-content:space-between;align-items:center;}
+    .price{font-family:var(--sans);font-size:1.4rem;font-weight:800;color:var(--green);}
+    .price span{font-size:.7rem;color:var(--text-dim);font-family:var(--mono);font-weight:400;}
+    .server-status{font-size:.6rem;letter-spacing:.1em;padding:4px 10px;border:1px solid;}
+    .server-status.available{color:var(--green);border-color:var(--green-dim);}
+    .server-status.sold{color:var(--red);border-color:var(--red);}
+    .server-status.reserved{color:var(--amber);border-color:var(--amber);}
+    #contact{background:var(--surface);border-top:1px solid var(--border);}
+    .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;}
+    .contact-info{display:flex;flex-direction:column;gap:24px;}
+    .contact-item{display:flex;flex-direction:column;gap:4px;}
+    .contact-item-label{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--green);}
+    .contact-item-val{font-size:.85rem;color:var(--text);}
+    .contact-item-val a{color:var(--text);text-decoration:none;}
+    .contact-item-val a:hover{color:var(--green);}
+    .freelance-banner{border:1px solid rgba(255,184,0,.3);background:rgba(255,184,0,.05);padding:20px 24px;margin-top:8px;}
+    .freelance-banner-title{font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:6px;}
+    .freelance-banner-text{font-size:.78rem;color:var(--text-dim);line-height:1.7;}
+    .contact-form{display:flex;flex-direction:column;gap:14px;}
+    .form-input,.form-textarea{background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:12px 14px;font-family:var(--mono);font-size:.75rem;outline:none;transition:border-color .2s;width:100%;}
+    .form-input:focus,.form-textarea:focus{border-color:var(--green);}
+    .form-textarea{resize:vertical;min-height:120px;}
+    .form-group{display:flex;flex-direction:column;gap:5px;}
+    .form-label{font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);}
+    .form-msg{font-size:.72rem;padding:10px 14px;border:1px solid;display:none;}
+    .form-msg.success{color:var(--green);border-color:var(--green-dim);background:var(--green-sub);display:block;}
+    .form-msg.error{color:var(--red);border-color:var(--red);background:rgba(255,68,68,.05);display:block;}
+    footer{position:relative;z-index:2;border-top:1px solid var(--border);padding:40px 60px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+    .footer-copy{font-size:.65rem;color:var(--text-muted);letter-spacing:.1em;}
+    .footer-links{display:flex;gap:24px;}
+    .footer-links a{font-size:.65rem;color:var(--text-dim);text-decoration:none;letter-spacing:.1em;transition:color .2s;}
+    .footer-links a:hover{color:var(--green);}
+    .modal-overlay{position:fixed;inset:0;background:rgba(5,10,8,.95);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;}
+    .modal-overlay.open{opacity:1;pointer-events:all;}
+    .modal{background:var(--surface);border:1px solid var(--border-b);padding:40px;max-width:500px;width:90%;transform:translateY(20px);transition:transform .3s;position:relative;}
+    .modal-overlay.open .modal{transform:translateY(0);}
+    .modal-title{font-family:var(--sans);font-size:1.3rem;font-weight:700;color:#fff;margin-bottom:8px;}
+    .modal-sub{font-size:.72rem;color:var(--text-dim);margin-bottom:28px;line-height:1.6;}
+    .modal-close{position:absolute;top:20px;right:20px;background:none;border:none;color:var(--text-dim);font-size:1.2rem;cursor:none;}
+    .modal-close:hover{color:var(--green);}
+    @keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes fadeInRight{from{opacity:0;transform:translateY(-50%) translateX(30px)}to{opacity:1;transform:translateY(-50%) translateX(0)}}
+    ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border-b)}
+    @media(max-width:900px){nav{padding:16px 24px}.nav-links{display:none}#hero{padding:100px 24px 60px}.hero-terminal{display:none}section{padding:80px 24px}footer{padding:30px 24px}.contact-grid{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
-
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
-<!-- NAV -->
 <nav>
   <a href="#hero" class="nav-logo">PK<span>.dev</span></a>
   <ul class="nav-links">
     <li><a href="#skills">Skills</a></li>
     <li><a href="#experience">Experience</a></li>
+    <li><a href="#freelance">Services</a></li>
     <li><a href="#servers">Servers</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
-  <div class="nav-status">
-    <div class="status-dot"></div>
-    AVAILABLE FOR HIRE
+  <div class="nav-status" id="navStatus">
+    <div class="status-dot"></div> AVAILABLE FOR HIRE
   </div>
 </nav>
 
-<!-- HERO -->
 <section id="hero">
   <div class="hero-inner">
-    <div class="hero-tag">
-      <div class="status-dot"></div>
-      &nbsp;FREELANCE DEVOPS ENGINEER &nbsp;·&nbsp; AVAILABLE NOW
-    </div>
-    <h1 class="hero-name">PRINCE<br><span class="accent">KUMAR</span></h1>
-    <p class="hero-title">DevOps Engineer &nbsp;|&nbsp; SRE &nbsp;|&nbsp; Cloud Engineer</p>
-    <div class="hero-badges">
+    <div class="hero-tag"><div class="status-dot"></div>&nbsp;FREELANCE DEVOPS ENGINEER &nbsp;·&nbsp; AVAILABLE NOW</div>
+    <h1 class="hero-name" id="heroName">PRINCE<br><span class="accent">KUMAR</span></h1>
+    <p class="hero-title" id="heroTitle">DevOps Engineer &nbsp;|&nbsp; SRE &nbsp;|&nbsp; Cloud Engineer</p>
+    <div class="hero-badges" id="heroBadges">
       <span class="badge green">🟢 Freelancer</span>
-      <span class="badge">AWS</span>
-      <span class="badge">Azure</span>
-      <span class="badge">OpenStack</span>
-      <span class="badge">Kubernetes</span>
-      <span class="badge">Terraform</span>
+      <span class="badge">AWS</span><span class="badge">Azure</span><span class="badge">Kubernetes</span><span class="badge">Terraform</span>
       <span class="badge amber">⚡ 2+ Yrs Exp</span>
     </div>
-    <p class="hero-desc">
-      DevOps & SRE with 2+ years engineering production-grade cloud-native platforms across AWS, Azure & OpenStack.
-      Specialized in Kubernetes orchestration, IaC, CI/CD automation, and reliability engineering.
-      Reduced provisioning time by <strong style="color:var(--green)">60%</strong> through Terraform automation.
-    </p>
+    <p class="hero-desc" id="heroDesc">DevOps & SRE with 2+ years engineering production-grade cloud-native platforms. Specialized in Kubernetes, IaC & CI/CD automation. Reduced provisioning time by <strong style="color:var(--green)">60%</strong> through Terraform automation.</p>
     <div class="hero-cta">
       <a href="#contact" class="btn btn-primary">$ hire --me</a>
       <a href="#servers" class="btn btn-outline">$ view --servers</a>
-      <a href="https://www.linkedin.com/in/kmprincekumar" target="_blank" class="btn btn-outline">$ open linkedin</a>
+      <a id="linkedinBtn" href="https://www.linkedin.com/in/kmprincekumar" target="_blank" class="btn btn-outline">$ open linkedin</a>
+      <a id="resumeBtn" href="#" target="_blank" class="btn btn-outline" style="display:none">$ download --resume</a>
     </div>
   </div>
-
-  <!-- Terminal Widget -->
   <div class="hero-terminal">
     <div class="terminal-bar">
-      <div class="t-dot" style="background:#ff5f57"></div>
-      <div class="t-dot" style="background:#ffbd2e"></div>
-      <div class="t-dot" style="background:#28c840"></div>
+      <div class="t-dot" style="background:#ff5f57"></div><div class="t-dot" style="background:#ffbd2e"></div><div class="t-dot" style="background:#28c840"></div>
       &nbsp; prince@sre-node ~ bash
     </div>
-    <div class="terminal-body">
-      <div><span class="t-prompt">prince@sre ›</span> <span class="t-cmd">whoami</span></div>
+    <div class="terminal-body" id="terminalBody">
+      <div><span class="t-prompt">prince@sre ›</span> <span style="color:#fff">whoami</span></div>
       <div class="t-out green">Prince Kumar — DevOps / SRE Engineer</div>
-      <div style="margin-top:6px"><span class="t-prompt">prince@sre ›</span> <span class="t-cmd">cat status.yml</span></div>
-      <div class="t-out">availability: <span style="color:var(--green)">OPEN</span></div>
+      <div style="margin-top:6px"><span class="t-prompt">prince@sre ›</span> <span style="color:#fff">cat status.yml</span></div>
+      <div class="t-out">availability: <span style="color:var(--green)" id="t-avail">OPEN</span></div>
       <div class="t-out">mode: <span style="color:var(--amber)">Freelancer</span></div>
-      <div class="t-out">exp: 2+ years</div>
-      <div class="t-out">location: Noida, IN</div>
+      <div class="t-out">location: <span id="t-loc">Noida, IN</span></div>
       <div class="t-out">remote: true</div>
-      <div style="margin-top:6px"><span class="t-prompt">prince@sre ›</span> <span class="t-cmd">kubectl get nodes</span></div>
-      <div class="t-out">NAME&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; STATUS&nbsp;&nbsp; ROLES</div>
-      <div class="t-out green">aws-eks-01&nbsp;&nbsp; Ready&nbsp;&nbsp;&nbsp; master</div>
-      <div class="t-out green">azure-aks-01&nbsp; Ready&nbsp;&nbsp;&nbsp; worker</div>
-      <div class="t-out green">os-k8s-01&nbsp;&nbsp;&nbsp; Ready&nbsp;&nbsp;&nbsp; worker</div>
+      <div style="margin-top:6px"><span class="t-prompt">prince@sre ›</span> <span style="color:#fff">kubectl get nodes</span></div>
+      <div class="t-out" style="color:var(--green)">aws-eks-01&nbsp;&nbsp; Ready&nbsp;&nbsp; master</div>
+      <div class="t-out" style="color:var(--green)">azure-aks-01 Ready&nbsp;&nbsp; worker</div>
+      <div class="t-out" style="color:var(--green)">os-k8s-01&nbsp;&nbsp;&nbsp; Ready&nbsp;&nbsp; worker</div>
       <div style="margin-top:6px"><span class="t-prompt">prince@sre ›</span> <span class="blink">█</span></div>
     </div>
   </div>
 </section>
 
-<!-- SKILLS -->
 <section id="skills">
   <div class="section-label"><span>02</span> Technical Stack</div>
-  <h2>Skills &amp; <span class="accent">Tools</span></h2>
-  <br><br>
-  <div class="skills-grid">
-    <div class="skill-category">
-      <div class="skill-cat-name">Cloud Platforms</div>
-      <div class="skill-tags">
-        <span class="skill-tag">AWS</span><span class="skill-tag">Microsoft Azure</span><span class="skill-tag">OpenStack</span>
-      </div>
-    </div>
-    <div class="skill-category">
-      <div class="skill-cat-name">DevOps & CI/CD</div>
-      <div class="skill-tags">
-        <span class="skill-tag">Jenkins</span><span class="skill-tag">GitHub Actions</span><span class="skill-tag">GitLab CI</span><span class="skill-tag">ArgoCD</span><span class="skill-tag">GitOps</span>
-      </div>
-    </div>
-    <div class="skill-category">
-      <div class="skill-cat-name">Infrastructure as Code</div>
-      <div class="skill-tags">
-        <span class="skill-tag">Terraform</span><span class="skill-tag">CloudFormation</span><span class="skill-tag">Ansible</span>
-      </div>
-    </div>
-    <div class="skill-category">
-      <div class="skill-cat-name">Containers & Orchestration</div>
-      <div class="skill-tags">
-        <span class="skill-tag">Docker</span><span class="skill-tag">Kubernetes</span><span class="skill-tag">Helm</span><span class="skill-tag">Podman</span><span class="skill-tag">OpenShift</span>
-      </div>
-    </div>
-    <div class="skill-category">
-      <div class="skill-cat-name">Monitoring & Observability</div>
-      <div class="skill-tags">
-        <span class="skill-tag">Prometheus</span><span class="skill-tag">Grafana</span><span class="skill-tag">ELK Stack</span><span class="skill-tag">Datadog</span><span class="skill-tag">VictoriaMetrics</span><span class="skill-tag">Zabbix</span>
-      </div>
-    </div>
-    <div class="skill-category">
-      <div class="skill-cat-name">Identity & Security</div>
-      <div class="skill-tags">
-        <span class="skill-tag">AWS IAM</span><span class="skill-tag">Azure AD</span><span class="skill-tag">Okta</span><span class="skill-tag">Keycloak</span><span class="skill-tag">HashiCorp Vault</span><span class="skill-tag">OPA</span>
-      </div>
-    </div>
-    <div class="skill-category">
-      <div class="skill-cat-name">Networking</div>
-      <div class="skill-tags">
-        <span class="skill-tag">TCP/IP</span><span class="skill-tag">DNS</span><span class="skill-tag">VPN</span><span class="skill-tag">Load Balancers</span><span class="skill-tag">VPC</span><span class="skill-tag">NSG</span>
-      </div>
-    </div>
-    <div class="skill-category">
-      <div class="skill-cat-name">Scripting & Databases</div>
-      <div class="skill-tags">
-        <span class="skill-tag">Bash</span><span class="skill-tag">Python</span><span class="skill-tag">PowerShell</span><span class="skill-tag">MySQL</span><span class="skill-tag">PostgreSQL</span><span class="skill-tag">Redis</span>
-      </div>
-    </div>
-    <div class="skill-category">
-      <div class="skill-cat-name">Compliance</div>
-      <div class="skill-tags">
-        <span class="skill-tag">SOC2</span><span class="skill-tag">GDPR</span><span class="skill-tag">ISO27001</span><span class="skill-tag">RBAC</span><span class="skill-tag">MFA</span><span class="skill-tag">SSO</span>
-      </div>
-    </div>
+  <h2>Skills &amp; <span class="accent">Tools</span></h2><br><br>
+  <div class="skills-grid" id="skillsGrid">
+    <div style="color:var(--text-muted);font-size:.75rem;padding:20px">Loading skills...</div>
   </div>
 </section>
 
-<!-- EXPERIENCE -->
 <section id="experience">
   <div class="section-label"><span>03</span> Work Experience</div>
-  <h2>Career <span class="accent">Timeline</span></h2>
-  <br><br>
-  <div class="exp-timeline">
-
-    <div class="exp-item">
-      <div class="exp-dot"></div>
-      <div class="exp-period">June 2025 – PRESENT &nbsp;·&nbsp; CURRENT ROLE</div>
-      <div class="exp-role">Site Reliability Engineer</div>
-      <div class="exp-company">Coredge &nbsp;·&nbsp; Noida, India &nbsp;/&nbsp; Nairobi, Kenya (Client: Apeiro Digital)</div>
-      <ul class="exp-bullets">
-        <li>Ensured reliability, availability, and performance on private OpenStack cloud</li>
-        <li>Built & maintained CI/CD pipelines (Jenkins, GitLab CI, GitHub Actions) for staging & production</li>
-        <li>Automated infrastructure provisioning using Terraform integrated with OpenStack APIs</li>
-        <li>Designed & managed Kubernetes clusters with Helm-based deployments</li>
-        <li>Implemented Prometheus & Grafana monitoring, reducing incident response time</li>
-        <li>Deployed ELK Stack + Fluentd for centralized logging & root cause analysis</li>
-        <li>Designed HA architecture with load balancing, auto-scaling, and failover</li>
-        <li>Managed on-call rotations & incident response; improved MTTR with automation</li>
-      </ul>
-    </div>
-
-    <div class="exp-item">
-      <div class="exp-dot" style="background:var(--amber); box-shadow:0 0 15px var(--amber)"></div>
-      <div class="exp-period">March 2025 – June 2025</div>
-      <div class="exp-role">Cloud Engineer</div>
-      <div class="exp-company">TOL &nbsp;·&nbsp; Noida, India</div>
-      <ul class="exp-bullets">
-        <li>Led containerization initiatives using Docker and Docker Compose</li>
-        <li>Managed AKS Kubernetes clusters for scalable production workloads</li>
-        <li>Developed reusable IaC modules with Terraform; administered GitLab servers</li>
-        <li>Configured Azure Active Directory with RBAC and authentication policies</li>
-        <li>Designed secure Azure networking (VNets, NSGs, VPN Gateway)</li>
-        <li>Managed AWS EC2, S3, RDS, VPC, IAM, Lambda; deployed EKS with NGINX Ingress</li>
-        <li>Implemented Auto Scaling, Load Balancers, and CloudWatch monitoring</li>
-      </ul>
-    </div>
-
-    <div class="exp-item">
-      <div class="exp-dot" style="background:var(--blue); box-shadow:0 0 15px var(--blue)"></div>
-      <div class="exp-period">FEB 2024 – FEB 2025</div>
-      <div class="exp-role">Junior DevOps Engineer</div>
-      <div class="exp-company">ERP Consulting &nbsp;·&nbsp; Pune, India</div>
-      <ul class="exp-bullets">
-        <li>Built & managed Docker images and multi-container applications</li>
-        <li>Administered Kubernetes clusters (EKS & AKS) for high availability</li>
-        <li>Developed IaC with Terraform & Ansible — improved provisioning speed by 60%</li>
-        <li>Managed GitLab CI/CD pipelines & runners</li>
-        <li>Implemented Azure AD IAM with RBAC, MFA, and conditional access</li>
-        <li>Architected AWS solutions: EC2, VPC, RDS, Lambda, SQS, SNS</li>
-        <li>Integrated SSO providers: Okta, Auth0, Keycloak; managed secrets with HashiCorp Vault</li>
-        <li>Enforced compliance standards: SOC2, GDPR, ISO27001</li>
-      </ul>
-    </div>
-
+  <h2>Career <span class="accent">Timeline</span></h2><br><br>
+  <div class="exp-timeline" id="expTimeline">
+    <div style="color:var(--text-muted);font-size:.75rem;padding:20px 0 0 40px">Loading experience...</div>
   </div>
 </section>
 
-<!-- ACHIEVEMENTS -->
 <section id="achievements">
   <div class="section-label"><span>04</span> Key Achievements</div>
-  <h2>Impact &amp; <span class="accent">Results</span></h2>
-  <br><br>
-  <div class="achievements-grid">
-    <div class="ach-card">
-      <div class="ach-num">60%</div>
-      <div class="ach-label">Reduced infrastructure provisioning time through Terraform & Ansible automation</div>
-    </div>
-    <div class="ach-card">
-      <div class="ach-num">↓ MTTR</div>
-      <div class="ach-label">Improved incident response with proactive Prometheus/Grafana monitoring & alerting</div>
-    </div>
-    <div class="ach-card">
-      <div class="ach-num">99.9%</div>
-      <div class="ach-label">Delivered highly available Kubernetes platforms supporting production workloads</div>
-    </div>
-    <div class="ach-card">
-      <div class="ach-num">3+</div>
-      <div class="ach-label">Cloud platforms managed: AWS, Azure, and OpenStack in production environments</div>
-    </div>
-    <div class="ach-card">
-      <div class="ach-num">CI/CD</div>
-      <div class="ach-label">Reduced manual deployment effort significantly via automated CI/CD pipeline engineering</div>
-    </div>
-    <div class="ach-card">
-      <div class="ach-num">IAM</div>
-      <div class="ach-label">Strengthened security posture via IAM, RBAC, SSO, and HashiCorp Vault secret management</div>
-    </div>
+  <h2>Impact &amp; <span class="accent">Results</span></h2><br><br>
+  <div class="achievements-grid" id="achievementsGrid">
+    <div style="color:var(--text-muted);font-size:.75rem;padding:20px">Loading...</div>
   </div>
 </section>
 
-<!-- SERVER MARKETPLACE -->
+<section id="freelance">
+  <div class="section-label"><span>05</span> Freelance Services</div>
+  <h2>What I <span class="accent">Offer</span></h2>
+  <p style="color:var(--text-dim);font-size:.85rem;margin-bottom:40px;max-width:600px;line-height:1.8">Available for contract, part-time, and project-based DevOps & SRE work. Remote-friendly. Fast delivery.</p>
+  <div class="services-grid" id="servicesGrid">
+    <div style="color:var(--text-muted);font-size:.75rem;padding:20px">Loading services...</div>
+  </div>
+</section>
+
 <section id="servers">
-  <div class="section-label"><span>05</span> Server Marketplace</div>
-  <div class="servers-header">
-    <div>
-      <h2>Servers <span class="accent">For Sale</span></h2>
-      <p style="color:var(--text-dim);font-size:0.78rem;margin-top:8px">Pre-configured, hardened & ready-to-deploy VPS and Dedicated servers</p>
-    </div>
+  <div class="section-label"><span>06</span> Server Marketplace</div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;margin-bottom:8px">
+    <div><h2>Servers <span class="accent">For Sale</span></h2>
+    <p style="color:var(--text-dim);font-size:.78rem;margin-top:8px">Pre-configured, hardened & ready-to-deploy VPS and Dedicated servers at affordable prices</p></div>
     <div class="server-filters">
-      <button class="filter-btn active" onclick="filterServers('all', this)">All</button>
-      <button class="filter-btn" onclick="filterServers('vps', this)">VPS</button>
-      <button class="filter-btn" onclick="filterServers('dedicated', this)">Dedicated</button>
+      <button class="filter-btn active" onclick="filterServers('all',this)">All</button>
+      <button class="filter-btn" onclick="filterServers('vps',this)">VPS</button>
+      <button class="filter-btn" onclick="filterServers('dedicated',this)">Dedicated</button>
     </div>
   </div>
-
-  <div class="servers-grid" id="serversGrid">
-    <!-- Populated by JS -->
-  </div>
-
-  <!-- Add Server Panel -->
-  <div class="add-server-section">
-    <div class="add-server-header">
-      <div class="add-server-title">⊕ &nbsp;List a New Server</div>
-      <button class="add-toggle" onclick="toggleAddForm()">+ ADD SERVER</button>
-    </div>
-    <div class="add-server-form" id="addServerForm">
-      <div class="form-grid">
-        <div class="form-group">
-          <label class="form-label">Server Name</label>
-          <input class="form-input" id="srvName" placeholder="e.g. nginx-prod-01" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Type</label>
-          <select class="form-select" id="srvType">
-            <option value="vps">VPS</option>
-            <option value="dedicated">Dedicated</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">CPU</label>
-          <input class="form-input" id="srvCpu" placeholder="e.g. 8 vCPU / Intel Xeon" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">RAM</label>
-          <input class="form-input" id="srvRam" placeholder="e.g. 32 GB DDR4" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Storage</label>
-          <input class="form-input" id="srvStorage" placeholder="e.g. 500 GB NVMe SSD" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Bandwidth</label>
-          <input class="form-input" id="srvBw" placeholder="e.g. 1 Gbps unmetered" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Location</label>
-          <input class="form-input" id="srvLoc" placeholder="e.g. Mumbai, IN" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Price ($/mo)</label>
-          <input class="form-input" id="srvPrice" type="number" placeholder="e.g. 49" />
-        </div>
-      </div>
-      <button class="btn btn-primary" onclick="addServer()" style="margin-top:8px">$ LIST SERVER</button>
-      <div id="serverMsg" class="form-msg" style="margin-top:12px"></div>
-    </div>
-  </div>
+  <div class="servers-grid" id="serversGrid"><div style="color:var(--text-muted);font-size:.75rem;padding:20px">Loading servers...</div></div>
 </section>
 
-<!-- CONTACT -->
 <section id="contact">
-  <div class="section-label"><span>06</span> Get In Touch</div>
+  <div class="section-label"><span>07</span> Get In Touch</div>
   <div class="contact-grid">
     <div>
-      <h2>Let's <span class="accent">Connect</span></h2>
-      <br>
+      <h2>Let's <span class="accent">Connect</span></h2><br>
       <div class="contact-info">
         <div class="freelance-banner">
           <div class="freelance-banner-title">⚡ Open for Freelance Projects</div>
-          <div class="freelance-banner-text">
-            Available for DevOps consulting, CI/CD setup, Kubernetes deployments, cloud migrations,
-            infrastructure audits, and SRE engagements. Remote-friendly. Let's build something reliable.
-          </div>
+          <div class="freelance-banner-text" id="freelanceBannerText">Available for DevOps consulting, CI/CD setup, Kubernetes deployments, cloud migrations, infrastructure audits, and SRE engagements. Remote-friendly.</div>
         </div>
-        <div class="contact-item">
-          <div class="contact-item-label">Email</div>
-          <div class="contact-item-val"><a href="mailto:kmprince15932@gmail.com">kmprince15932@gmail.com</a></div>
-        </div>
-        <div class="contact-item">
-          <div class="contact-item-label">Phone</div>
-          <div class="contact-item-val">+91 8081366401</div>
-        </div>
-        <div class="contact-item">
-          <div class="contact-item-label">LinkedIn</div>
-          <div class="contact-item-val"><a href="https://www.linkedin.com/in/kmprincekumar" target="_blank">linkedin.com/in/kmprincekumar</a></div>
-        </div>
-        <div class="contact-item">
-          <div class="contact-item-label">Location</div>
-          <div class="contact-item-val">Noida, India &nbsp;·&nbsp; Remote Available</div>
-        </div>
-        <div class="contact-item">
-          <div class="contact-item-label">Languages</div>
-          <div class="contact-item-val">English, Hindi</div>
-        </div>
+        <div class="contact-item"><div class="contact-item-label">Email</div><div class="contact-item-val" id="ci-email"><a href="mailto:kmprince15932@gmail.com">kmprince15932@gmail.com</a></div></div>
+        <div class="contact-item"><div class="contact-item-label">Phone</div><div class="contact-item-val" id="ci-phone">+91 8081366401</div></div>
+        <div class="contact-item"><div class="contact-item-label">LinkedIn</div><div class="contact-item-val"><a id="ci-linkedin" href="https://www.linkedin.com/in/kmprincekumar" target="_blank">linkedin.com/in/kmprincekumar</a></div></div>
+        <div class="contact-item"><div class="contact-item-label">Location</div><div class="contact-item-val" id="ci-location">Noida, India · Remote Available</div></div>
+        <div class="contact-item"><div class="contact-item-label">Rate</div><div class="contact-item-val" id="ci-rate">Negotiable</div></div>
       </div>
     </div>
-
     <div>
-      <div style="font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--green);margin-bottom:24px">
-        // Send a Message
-      </div>
+      <div style="font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--green);margin-bottom:24px">// Send a Message</div>
       <div class="contact-form">
-        <div class="form-group">
-          <label class="form-label">Your Name</label>
-          <input class="form-input" id="cName" placeholder="John Doe" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Your Email</label>
-          <input class="form-input" id="cEmail" type="email" placeholder="john@company.com" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Subject</label>
-          <input class="form-input" id="cSubject" placeholder="DevOps Consulting / Freelance Inquiry" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Message</label>
-          <textarea id="cMessage" placeholder="Tell me about your project..."></textarea>
-        </div>
+        <div class="form-group"><label class="form-label">Your Name</label><input class="form-input" id="cName" placeholder="John Doe"/></div>
+        <div class="form-group"><label class="form-label">Your Email</label><input class="form-input" id="cEmail" type="email" placeholder="john@company.com"/></div>
+        <div class="form-group"><label class="form-label">Subject</label><input class="form-input" id="cSubject" placeholder="DevOps Consulting / Freelance Inquiry"/></div>
+        <div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea" id="cMessage" placeholder="Tell me about your project..."></textarea></div>
         <button class="btn btn-primary" onclick="sendContact()" id="sendBtn">$ send --message</button>
         <div id="contactMsg" class="form-msg"></div>
       </div>
@@ -1152,35 +288,26 @@
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
-  <div class="footer-copy">© 2025 Prince Kumar — All systems operational</div>
+  <div class="footer-copy" id="footerCopy">© 2025 Prince Kumar — All systems operational</div>
   <div class="footer-links">
-    <a href="https://www.linkedin.com/in/kmprincekumar" target="_blank">LinkedIn</a>
-    <a href="mailto:kmprince15932@gmail.com">Email</a>
+    <a id="f-linkedin" href="https://www.linkedin.com/in/kmprincekumar" target="_blank">LinkedIn</a>
+    <a id="f-email" href="mailto:kmprince15932@gmail.com">Email</a>
+    <a href="/admin" style="color:var(--text-muted)">Admin</a>
     <a href="#hero">Top ↑</a>
   </div>
 </footer>
 
-<!-- BUY SERVER MODAL -->
+<!-- BUY MODAL -->
 <div class="modal-overlay" id="buyModal">
-  <div class="modal" style="position:relative">
+  <div class="modal">
     <button class="modal-close" onclick="closeModal()">✕</button>
     <div class="modal-title" id="modalTitle">Inquire About Server</div>
-    <div class="modal-sub" id="modalSub">Fill out the form below and I'll get back to you within 24 hours.</div>
+    <div class="modal-sub" id="modalSub">Fill in below — I'll reply within 24 hours.</div>
     <div class="contact-form">
-      <div class="form-group">
-        <label class="form-label">Your Name</label>
-        <input class="form-input" id="mName" placeholder="Your name" />
-      </div>
-      <div class="form-group">
-        <label class="form-label">Your Email</label>
-        <input class="form-input" id="mEmail" type="email" placeholder="your@email.com" />
-      </div>
-      <div class="form-group">
-        <label class="form-label">Message</label>
-        <textarea id="mMessage" style="min-height:80px;background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:12px;font-family:var(--mono);font-size:0.75rem;resize:vertical;outline:none;width:100%;border-radius:0;" placeholder="I'm interested in this server..."></textarea>
-      </div>
+      <div class="form-group"><label class="form-label">Your Name</label><input class="form-input" id="mName" placeholder="Your name"/></div>
+      <div class="form-group"><label class="form-label">Your Email</label><input class="form-input" id="mEmail" type="email" placeholder="your@email.com"/></div>
+      <div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea" id="mMessage" style="min-height:80px"></textarea></div>
       <button class="btn btn-primary" onclick="sendServerInquiry()">$ send --inquiry</button>
       <div id="modalMsg" class="form-msg"></div>
     </div>
@@ -1188,190 +315,210 @@
 </div>
 
 <script>
-// Cursor
-const cursor = document.getElementById('cursor');
-const ring = document.getElementById('cursorRing');
-let mx = 0, my = 0, rx = 0, ry = 0;
-document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cursor.style.left = mx-6+'px'; cursor.style.top = my-6+'px'; });
-setInterval(() => { rx += (mx-rx)*0.15; ry += (my-ry)*0.15; ring.style.left = rx-18+'px'; ring.style.top = ry-18+'px'; }, 16);
+// ── CURSOR ────────────────────────────────────────────────
+const cursor=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx-6+'px';cursor.style.top=my-6+'px';});
+setInterval(()=>{rx+=(mx-rx)*.15;ry+=(my-ry)*.15;ring.style.left=rx-18+'px';ring.style.top=ry-18+'px';},16);
 
-// Scroll animations
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.1 });
-document.querySelectorAll('.exp-item').forEach(el => observer.observe(el));
+// ── SCROLL ANIM ───────────────────────────────────────────
+const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.1});
+document.querySelectorAll('.exp-item').forEach(el=>observer.observe(el));
 
-// Server data
-let servers = [
-  { id: 1, name: 'cloud-burst-01', type: 'vps', cpu: '4 vCPU', ram: '8 GB DDR4', storage: '200 GB NVMe', bandwidth: '500 Mbps', location: 'Mumbai, IN', price: 29, status: 'available', featured: false },
-  { id: 2, name: 'titan-k8s-node', type: 'dedicated', cpu: '16 Core Intel Xeon', ram: '64 GB DDR4', storage: '2 TB NVMe SSD', bandwidth: '1 Gbps Unmetered', location: 'Noida, IN', price: 199, status: 'available', featured: true },
-  { id: 3, name: 'micro-vps-lite', type: 'vps', cpu: '2 vCPU', ram: '4 GB', storage: '80 GB SSD', bandwidth: '250 Mbps', location: 'Delhi, IN', price: 12, status: 'available', featured: false },
-  { id: 4, name: 'forge-bare-metal', type: 'dedicated', cpu: '32 Core AMD EPYC', ram: '128 GB ECC', storage: '4 TB NVMe RAID', bandwidth: '10 Gbps', location: 'Bangalore, IN', price: 499, status: 'available', featured: true },
-  { id: 5, name: 'dev-sandbox-02', type: 'vps', cpu: '8 vCPU', ram: '16 GB DDR4', storage: '500 GB SSD', bandwidth: '1 Gbps', location: 'Hyderabad, IN', price: 59, status: 'available', featured: false },
-  { id: 6, name: 'prod-relay-eu', type: 'vps', cpu: '6 vCPU', ram: '12 GB', storage: '320 GB NVMe', bandwidth: '750 Mbps', location: 'Frankfurt, DE', price: 45, status: 'available', featured: false },
-];
-let currentFilter = 'all';
-let selectedServer = null;
+// ── DATA ──────────────────────────────────────────────────
+let allServers=[],currentFilter='all',selectedServer=null;
+const dotColors=['var(--green)','var(--amber)','var(--blue)'];
+
+// ── LOAD PROFILE ──────────────────────────────────────────
+async function loadProfile() {
+  try {
+    const r=await fetch('/api/profile');
+    const d=await r.json();
+    if(!d.success) return;
+    const p=d.profile;
+
+    // Hero
+    if(p.name){const n=p.name.split(' ');document.getElementById('heroName').innerHTML=`${n[0]}<br><span class="accent">${n.slice(1).join(' ')}</span>`;}
+    if(p.title) document.getElementById('heroTitle').textContent=p.title;
+    if(p.summary) document.getElementById('heroDesc').textContent=p.summary;
+
+    // Badges
+    if(p.experience||p.availability){
+      const avail=p.availability==='open'?'🟢 Freelancer':p.availability==='limited'?'🟡 Limited':'🔴 Busy';
+      document.getElementById('heroBadges').innerHTML=`
+        <span class="badge green">${avail}</span>
+        <span class="badge">AWS</span><span class="badge">Azure</span><span class="badge">Kubernetes</span><span class="badge">Terraform</span>
+        <span class="badge amber">⚡ ${p.experience||'2+'} Yrs Exp</span>`;
+    }
+
+    // Nav status
+    if(p.availability){
+      const labels={open:'AVAILABLE FOR HIRE',limited:'LIMITED AVAILABILITY',unavailable:'CURRENTLY BUSY'};
+      document.getElementById('navStatus').innerHTML=`<div class="status-dot"></div> ${labels[p.availability]||'AVAILABLE'}`;
+    }
+
+    // Terminal
+    if(p.location) document.getElementById('t-loc').textContent=p.location;
+    if(p.availability) document.getElementById('t-avail').textContent=p.availability.toUpperCase();
+
+    // Contact info
+    if(p.email){document.getElementById('ci-email').innerHTML=`<a href="mailto:${p.email}">${p.email}</a>`;}
+    if(p.phone) document.getElementById('ci-phone').textContent=p.phone;
+    if(p.location) document.getElementById('ci-location').textContent=`${p.location} · Remote Available`;
+    if(p.rate) document.getElementById('ci-rate').textContent=p.rate;
+    if(p.linkedin){
+      document.getElementById('ci-linkedin').href=p.linkedin;
+      document.getElementById('ci-linkedin').textContent=p.linkedin.replace('https://','');
+      document.getElementById('linkedinBtn').href=p.linkedin;
+      document.getElementById('f-linkedin').href=p.linkedin;
+    }
+    if(p.email) document.getElementById('f-email').href=`mailto:${p.email}`;
+    if(p.resume_url&&p.resume_url.trim()){
+      const rb=document.getElementById('resumeBtn');
+      rb.href=p.resume_url; rb.style.display='inline-flex';
+    }
+
+    // Skills
+    if(p.skills && typeof p.skills==='object'){
+      document.getElementById('skillsGrid').innerHTML=Object.entries(p.skills).map(([cat,tags])=>`
+        <div class="skill-category">
+          <div class="skill-cat-name">${cat}</div>
+          <div class="skill-tags">${tags.map(t=>`<span class="skill-tag">${t}</span>`).join('')}</div>
+        </div>`).join('');
+    }
+
+    // Experience
+    if(p.experience_json && Array.isArray(p.experience_json)){
+      document.getElementById('expTimeline').innerHTML=p.experience_json.map((exp,i)=>`
+        <div class="exp-item">
+          <div class="exp-dot" style="background:${dotColors[i%3]};box-shadow:0 0 15px ${dotColors[i%3]}"></div>
+          <div class="exp-period">${exp.period||''}</div>
+          <div class="exp-role">${exp.title||''}</div>
+          <div class="exp-company">${exp.company||''} · ${exp.location||''}</div>
+          <ul class="exp-bullets">${(exp.bullets||[]).map(b=>`<li>${b}</li>`).join('')}</ul>
+        </div>`).join('');
+      document.querySelectorAll('.exp-item').forEach(el=>observer.observe(el));
+    }
+
+    // Achievements
+    if(p.achievements_json && Array.isArray(p.achievements_json)){
+      document.getElementById('achievementsGrid').innerHTML=p.achievements_json.map(a=>`
+        <div class="ach-card"><div class="ach-num">${a.metric}</div><div class="ach-label">${a.label}</div></div>`).join('');
+    }
+
+    // Services
+    if(p.freelance_services && Array.isArray(p.freelance_services)){
+      const icons=['⚙','☸','☁','🏗','📊','🔒','🐧','💬'];
+      document.getElementById('servicesGrid').innerHTML=p.freelance_services.map((s,i)=>`
+        <div class="service-card"><span class="service-icon">${icons[i%icons.length]}</span><span class="service-label">${s}</span></div>`).join('');
+    }
+
+    // Footer
+    if(p.name) document.getElementById('footerCopy').textContent=`© ${new Date().getFullYear()} ${p.name} — All systems operational`;
+
+  } catch(e){ console.log('Profile load error, using defaults'); }
+}
+
+// ── SERVERS ──────────────────────────────────────────────
+async function loadServers() {
+  try {
+    const r=await fetch('/api/servers');
+    const d=await r.json();
+    allServers=d.servers||[];
+    renderServers();
+  } catch{ renderServersOffline(); }
+}
 
 function renderServers() {
-  const grid = document.getElementById('serversGrid');
-  const filtered = currentFilter === 'all' ? servers : servers.filter(s => s.type === currentFilter);
-  grid.innerHTML = filtered.map(s => `
-    <div class="server-card ${s.featured ? 'featured' : ''}" data-type="${s.type}">
-      <div class="server-type">${s.type.toUpperCase()} ${s.type === 'vps' ? '// Virtual Private' : '// Dedicated Metal'}</div>
+  const filtered=currentFilter==='all'?allServers:allServers.filter(s=>s.type===currentFilter);
+  const grid=document.getElementById('serversGrid');
+  if(!filtered.length){grid.innerHTML='<div style="color:var(--text-muted);font-size:.78rem;padding:24px;grid-column:1/-1">No servers listed in this category.</div>';return;}
+  grid.innerHTML=filtered.map(s=>`
+    <div class="server-card ${s.featured?'featured':''}">
+      <div class="server-type">${s.type.toUpperCase()} // ${s.type==='vps'?'Virtual Private':'Dedicated Metal'}</div>
       <div class="server-name">${s.name}</div>
-      <div class="server-location">📍 ${s.location}</div>
+      <div class="server-location">📍 ${s.location||'—'}</div>
+      ${s.description?`<div style="font-size:.68rem;color:var(--text-muted);margin-bottom:14px;line-height:1.6">${s.description}</div>`:''}
       <div class="server-specs">
-        <div class="spec"><div class="spec-label">CPU</div><div class="spec-val">${s.cpu}</div></div>
-        <div class="spec"><div class="spec-label">RAM</div><div class="spec-val">${s.ram}</div></div>
-        <div class="spec"><div class="spec-label">Storage</div><div class="spec-val">${s.storage}</div></div>
-        <div class="spec"><div class="spec-label">Bandwidth</div><div class="spec-val">${s.bandwidth}</div></div>
+        <div class="spec"><div class="spec-label">CPU</div><div class="spec-val">${s.cpu||'—'}</div></div>
+        <div class="spec"><div class="spec-label">RAM</div><div class="spec-val">${s.ram||'—'}</div></div>
+        <div class="spec"><div class="spec-label">Storage</div><div class="spec-val">${s.storage||'—'}</div></div>
+        <div class="spec"><div class="spec-label">Bandwidth</div><div class="spec-val">${s.bandwidth||'—'}</div></div>
       </div>
+      ${s.os_options?`<div style="font-size:.62rem;color:var(--text-muted);margin-bottom:14px">🖥 ${s.os_options}</div>`:''}
       <div class="server-price">
         <div class="price">$${s.price}<span>/mo</span></div>
         <div style="display:flex;gap:8px;align-items:center">
           <span class="server-status ${s.status}">${s.status.toUpperCase()}</span>
-          ${s.status === 'available' ? `<button class="btn btn-outline" style="padding:6px 14px;font-size:0.62rem" onclick="openBuyModal(${s.id})">BUY →</button>` : ''}
+          ${s.status==='available'?`<button class="btn btn-outline" style="padding:6px 14px;font-size:.62rem" onclick="openBuyModal('${s.id}')">BUY →</button>`:''}
         </div>
       </div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
-function filterServers(type, btn) {
-  currentFilter = type;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+function renderServersOffline() {
+  document.getElementById('serversGrid').innerHTML='<div style="color:var(--text-muted);font-size:.78rem;padding:24px;grid-column:1/-1">⚠ Server list unavailable — backend offline. Email <a href="mailto:kmprince15932@gmail.com" style="color:var(--green)">kmprince15932@gmail.com</a> for server inquiries.</div>';
+}
+
+function filterServers(type,btn) {
+  currentFilter=type;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   renderServers();
 }
 
-function toggleAddForm() {
-  const f = document.getElementById('addServerForm');
-  f.classList.toggle('open');
-}
-
-function addServer() {
-  const name = document.getElementById('srvName').value.trim();
-  const type = document.getElementById('srvType').value;
-  const cpu = document.getElementById('srvCpu').value.trim();
-  const ram = document.getElementById('srvRam').value.trim();
-  const storage = document.getElementById('srvStorage').value.trim();
-  const bandwidth = document.getElementById('srvBw').value.trim();
-  const location = document.getElementById('srvLoc').value.trim();
-  const price = document.getElementById('srvPrice').value;
-
-  if (!name || !cpu || !ram || !price) {
-    showMsg('serverMsg', 'Please fill in all required fields.', 'error');
-    return;
-  }
-
-  const newServer = {
-    id: Date.now(), name, type, cpu, ram, storage, bandwidth, location, price: Number(price), status: 'available', featured: false
-  };
-
-  // POST to backend API
-  fetch('/api/servers', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(newServer)
-  })
-  .then(r => r.json())
-  .then(data => {
-    if (data.success) {
-      servers.push(newServer);
-      renderServers();
-      showMsg('serverMsg', '✓ Server listed successfully!', 'success');
-      document.getElementById('addServerForm').classList.remove('open');
-    } else {
-      // fallback: add locally anyway
-      servers.push(newServer);
-      renderServers();
-      showMsg('serverMsg', '✓ Server added (frontend only — backend offline)', 'success');
-    }
-  })
-  .catch(() => {
-    servers.push(newServer);
-    renderServers();
-    showMsg('serverMsg', '✓ Server added locally (connect backend to persist)', 'success');
-  });
-}
-
+// ── MODALS ────────────────────────────────────────────────
 function openBuyModal(id) {
-  selectedServer = servers.find(s => s.id === id);
-  document.getElementById('modalTitle').textContent = `Inquire: ${selectedServer.name}`;
-  document.getElementById('modalSub').textContent = `${selectedServer.type.toUpperCase()} · ${selectedServer.cpu} · ${selectedServer.ram} · $${selectedServer.price}/mo`;
-  document.getElementById('mMessage').value = `Hi Prince, I'm interested in the server "${selectedServer.name}" listed at $${selectedServer.price}/mo. Please share more details.`;
+  selectedServer=allServers.find(s=>s.id===id);
+  if(!selectedServer) return;
+  document.getElementById('modalTitle').textContent=`Inquire: ${selectedServer.name}`;
+  document.getElementById('modalSub').textContent=`${selectedServer.type.toUpperCase()} · ${selectedServer.cpu||''} · ${selectedServer.ram||''} · $${selectedServer.price}/mo`;
+  document.getElementById('mMessage').value=`Hi Prince, I'm interested in the server "${selectedServer.name}" listed at $${selectedServer.price}/mo. Please share more details.`;
+  document.getElementById('modalMsg').className='form-msg';
   document.getElementById('buyModal').classList.add('open');
-  document.getElementById('modalMsg').className = 'form-msg';
+}
+function closeModal(){document.getElementById('buyModal').classList.remove('open');}
+document.getElementById('buyModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+
+async function sendServerInquiry() {
+  const name=document.getElementById('mName').value.trim();
+  const email=document.getElementById('mEmail').value.trim();
+  const message=document.getElementById('mMessage').value.trim();
+  if(!name||!email||!message){showMsg('modalMsg','Please fill all fields.','error');return;}
+  try {
+    const r=await fetch('/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name,email,subject:`Server Inquiry: ${selectedServer?.name}`,message,type:'server_inquiry',server_id:selectedServer?.id,server_name:selectedServer?.name})});
+    const d=await r.json();
+    showMsg('modalMsg',d.success?'✓ Inquiry sent! Prince will respond within 24hrs.':'✗ '+(d.error||'Error'),d.success?'success':'error');
+  } catch{showMsg('modalMsg','✗ Could not reach server. Email kmprince15932@gmail.com directly.','error');}
 }
 
-function closeModal() {
-  document.getElementById('buyModal').classList.remove('open');
+// ── CONTACT FORM ─────────────────────────────────────────
+async function sendContact() {
+  const name=document.getElementById('cName').value.trim();
+  const email=document.getElementById('cEmail').value.trim();
+  const subject=document.getElementById('cSubject').value.trim();
+  const message=document.getElementById('cMessage').value.trim();
+  if(!name||!email||!message){showMsg('contactMsg','Please fill in all fields.','error');return;}
+  const btn=document.getElementById('sendBtn');
+  btn.textContent='$ sending...';btn.style.opacity='.7';
+  try {
+    const r=await fetch('/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name,email,subject:subject||'Portfolio Contact',message})});
+    const d=await r.json();
+    if(d.success){
+      showMsg('contactMsg','✓ Message sent! I\'ll reply within 24 hours.','success');
+      ['cName','cEmail','cSubject','cMessage'].forEach(id=>document.getElementById(id).value='');
+    } else showMsg('contactMsg','✗ '+(d.error||'Failed. Try emailing directly.'),'error');
+  } catch{showMsg('contactMsg','✗ Backend offline. Email kmprince15932@gmail.com directly.','error');}
+  finally{btn.textContent='$ send --message';btn.style.opacity='1';}
 }
 
-function sendServerInquiry() {
-  const name = document.getElementById('mName').value.trim();
-  const email = document.getElementById('mEmail').value.trim();
-  const message = document.getElementById('mMessage').value.trim();
-  if (!name || !email || !message) { showMsg('modalMsg', 'Please fill all fields.', 'error'); return; }
+function showMsg(id,text,type){const el=document.getElementById(id);el.textContent=text;el.className=`form-msg ${type}`;}
 
-  fetch('/api/contact', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, email, subject: `Server Inquiry: ${selectedServer?.name}`, message })
-  })
-  .then(r => r.json())
-  .then(data => {
-    showMsg('modalMsg', data.success ? '✓ Inquiry sent! Prince will respond within 24hrs.' : '✗ ' + (data.error || 'Error sending.'), data.success ? 'success' : 'error');
-  })
-  .catch(() => showMsg('modalMsg', '✗ Could not reach server. Email kmprince15932@gmail.com directly.', 'error'));
-}
-
-function sendContact() {
-  const name = document.getElementById('cName').value.trim();
-  const email = document.getElementById('cEmail').value.trim();
-  const subject = document.getElementById('cSubject').value.trim();
-  const message = document.getElementById('cMessage').value.trim();
-  if (!name || !email || !message) { showMsg('contactMsg', 'Please fill in all fields.', 'error'); return; }
-
-  const btn = document.getElementById('sendBtn');
-  btn.textContent = '$ sending...';
-  btn.style.opacity = '0.7';
-
-  fetch('/api/contact', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, email, subject: subject || 'Portfolio Contact', message })
-  })
-  .then(r => r.json())
-  .then(data => {
-    if (data.success) {
-      showMsg('contactMsg', '✓ Message sent! I\'ll reply within 24 hours.', 'success');
-      document.getElementById('cName').value = '';
-      document.getElementById('cEmail').value = '';
-      document.getElementById('cSubject').value = '';
-      document.getElementById('cMessage').value = '';
-    } else {
-      showMsg('contactMsg', '✗ ' + (data.error || 'Failed to send. Try emailing directly.'), 'error');
-    }
-  })
-  .catch(() => showMsg('contactMsg', '✗ Backend offline. Email kmprince15932@gmail.com directly.', 'error'))
-  .finally(() => { btn.textContent = '$ send --message'; btn.style.opacity = '1'; });
-}
-
-function showMsg(id, text, type) {
-  const el = document.getElementById(id);
-  el.textContent = text;
-  el.className = `form-msg ${type}`;
-}
-
-// Close modal on overlay click
-document.getElementById('buyModal').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
-
-// Init
-renderServers();
+// ── INIT ──────────────────────────────────────────────────
+loadProfile();
+loadServers();
 </script>
 </body>
 </html>
